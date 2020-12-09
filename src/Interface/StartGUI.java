@@ -1,52 +1,19 @@
 package Interface;
 
-import javax.swing.*;
+import java.sql.SQLException;
 
 
-public class StartGUI{
+public class StartGUI {
 
-    private JComponent ui = null;
-
-
-    StartGUI() {  Interface.mainInterface();};
-
-
-
-
-
-
-    public JComponent getUI() {
-        return ui;
+    StartGUI() {
+        Interface.mainInterface();
     }
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-    public static void main(String[] args) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                StartGUI o = new StartGUI();
-
-                JFrame f = new JFrame(o.getClass().getSimpleName());
-                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                f.setLocationByPlatform(true);
-                f.setResizable(false);
-                f.setTitle("Склад товаров");
-
-
-                f.setContentPane(o.getUI());
-                f.pack();
-                f.setMinimumSize(f.getSize());
-                f.setLocationRelativeTo(null);
-
-                f.setVisible(true);
-
-            }
-        };
-        SwingUtilities.invokeLater(r);
+        StartGUI o = new StartGUI();
 
     }
 
-    public static String firstUpperCase(String word){
-        return word.substring(0, 1).toUpperCase() + word.substring(1);
-    }
+
 }
 

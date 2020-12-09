@@ -1,108 +1,110 @@
 package Interface;
 
-import com.company.Bakery;
-import com.company.Dairy;
-import com.company.Household;
-import com.company.Product;
+import com.company.*;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class StuffTable extends AbstractTableModel {
     ArrayList<Product> products = new ArrayList<>();
-    ArrayList<Product> productsFound = new ArrayList<>();
+    private final DB db = new DB();
+
 
     public String TypeOfProduct = "";//Долж
-    private String[] TypeOfProducts         = {"Бытовая химия",
-            "Молочные продукты",
-            "Выпечка"};
-    public Integer Code;//Долж
-    public String Name = "";//Долж
+    public String Code = "";//Долж
 
-    StuffTable() {
+
+    public StuffTable() {
         super();
+        try {
+            db.Connecting();
+
+            products = db.read();
+
+            db.CloseDB();
+            System.out.println("Данные считаны.Подключения закрыты!");
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Подключения закрыты!");
+        }
     }
 
     public void Add(Product s) {
 
-        products.add(s);
+        try {
+            db.Connecting();
+
+            db.add(s);//добавить в дб
+            products.add(s);//добавить в табл
+
+            db.CloseDB();
+            System.out.println("Запись добавлена.Подключение закрыто!");
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Подключение закрыто!");
+        }
         this.fireTableDataChanged();
     }
-    public void AddFound(Product s) {
 
-        productsFound.add(s);
-        this.fireTableDataChanged();
-    }
+    public void search(String code) {
 
-
-
-
-
-    public void search(Integer code) {
-
-        ArrayList<Product> res = new ArrayList<>();
         for (Product s : this.getProduct()) {
-            if (s.getCode().equals(code))  {
-                productsFound.add(s);
+            if (s.getName().equals(code)) {
+                products.add(s);
                 this.fireTableDataChanged();
 
             }
         }
-
-
 
     }
 
     public void searchName(String name) {
         ArrayList<Product> res = new ArrayList<>();
         for (Product s : this.getProduct()) {
-            if (s.getName().equals(name))  {
+            if (s.getName().equals(name)) {
                 res.add(s);
             }
         }
-        String found="<html><ul>";
-        for (Product s:res)
-        {
-            found += "<li>"+ s.getTypeOfProduct()+" " + s.getCode() +" "+s.getName()+" "+s.getBrand()+"</li>";
+        String found = "<html><ul>";
+        for (Product s : res) {
+            found += "<li>" + s.getTypeOfProduct() + " " + s.getCode() + " " + s.getName() + " " + s.getBrand() + "</li>";
         }
-        found+= "</ul><html>";
+        found += "</ul><html>";
 
-        if (res.size() > 1 )
-        {
+        if (res.size() > 1) {
             Object result = JOptionPane.showInputDialog(
                     null,
-                    new String[] {"По вашему запросу найдено несколько товаров:",
+                    new String[]{"По вашему запросу найдено несколько товаров:",
                             found},
                     "Результат поиска");
-            for(Product s:res)
-            {
-                if(s.getTypeOfProduct() == result)
-                {   JOptionPane.showMessageDialog(null,
-                        s.learnMore(),
-                        "Товар",
-                        JOptionPane.INFORMATION_MESSAGE);
+            for (Product s : res) {
+                if (s.getTypeOfProduct() == result) {
+                    JOptionPane.showMessageDialog(null,
+                            s.learnMore(),
+                            "Товар",
+                            JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
             }
 
-        }
-        else if (res.size() == 1 ){
-            for(Product s:res)
-            {
-                {   JOptionPane.showMessageDialog(null,
-                        s.learnMore(),
-                        "Товар",
-                        JOptionPane.INFORMATION_MESSAGE);
+        } else if (res.size() == 1) {
+            for (Product s : res) {
+                {
+                    JOptionPane.showMessageDialog(null,
+                            s.learnMore(),
+                            "Товар",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Товар не найден.",
+                    "Не найдено",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        else {JOptionPane.showMessageDialog(null,
-                "Товар не найден.",
-                "Не найдено",
-                JOptionPane.ERROR_MESSAGE);}
 
     }
+
     public String getType() {
         return TypeOfProduct;
     }
@@ -111,14 +113,7 @@ public class StuffTable extends AbstractTableModel {
         this.TypeOfProduct = typeOfProduct;
         this.fireTableStructureChanged();
     }
-    public void setName(String name) {
-        this.Name = name;
-        this.fireTableStructureChanged();
-    }
-    public void setCode(Integer code) {
-        this.Code = code;
-        this.fireTableStructureChanged();
-    }
+
 
     public Product[] getProduct() {
         switch (TypeOfProduct) {
@@ -141,47 +136,69 @@ public class StuffTable extends AbstractTableModel {
             }
         }
 
-        String found="<html><ul>";
-        for (Product s:res)
-        {
-            found += "<li>"+ s.getTypeOfProduct()+" " + s.getCode() +" "+s.getName()+" "+s.getBrand()+"</li>";
-        }
-        found+= "</ul><html>";
 
-        if (res.size() > 1 )
-        {
-            Object result = JOptionPane.showInputDialog(
-                    null,
-                    new String[] {"Ошибка, ОБРАТИТЕСЬ К АДМИНИСТРАТОРУ ДЛЯ РЕШЕНИЯ ПРОБЛЕМЫ (один код для нескольких товаров)."});
 
-        }
-        else if (res.size() == 1 ){
-            for(Product s:res)
-            {
+        if (res.size() > 1) {
+
+            for (Product s : res) {
                 int r = JOptionPane.showConfirmDialog(null,
-                        "Вы точно хотите удалить товар " + s.getTypeOfProduct() + "  " +s.getCode()+ "  " +s.getName() +"  "+s.getBrand()+"?",
+                        "Вы точно хотите удалить товар " + s.getTypeOfProduct() + "  " + s.getCode() + "  " + s.getName() + "  " + s.getBrand() + "?",
                         "Подтверждение",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
 
-                if (r == JOptionPane.YES_OPTION)
-                {
-                    products.remove(s);
+                if (r == JOptionPane.YES_OPTION) {
+                    try {
+                        db.Connecting();
+
+                        db.delete(s.getId());
+                        products.remove(s);
+                        db.CloseDB();
+                        System.out.println("Запись удалена.Подключение закрыто");
+                    } catch (ClassNotFoundException | SQLException e) {
+                        System.out.println("Подключение закрыто");
+                    }
                     JOptionPane.showMessageDialog(null,
                             "Товар успешно удален.",
                             "Успешно",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+
+        } else if (res.size() == 1) {
+            for (Product s : res) {
+                int r = JOptionPane.showConfirmDialog(null,
+                        "Вы точно хотите удалить товар " + s.getTypeOfProduct() + "  " + s.getCode() + "  " + s.getName() + "  " + s.getBrand() + "?",
+                        "Подтверждение",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+
+                if (r == JOptionPane.YES_OPTION) {
+                    try {
+                        db.Connecting();
+
+                        db.delete(s.getId());
+                        products.remove(s);
+                        db.CloseDB();
+                        System.out.println("Запись удалена.Подключение закрыто");
+                    } catch (ClassNotFoundException | SQLException e) {
+                        System.out.println("Подключение закрыто");
+                    }
+                    JOptionPane.showMessageDialog(null,
+                            "Товар успешно удален.",
+                            "Успешно",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Товар не найден.",
+                    "Не найдено",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        else {JOptionPane.showMessageDialog(null,
-                "Товар не найден.",
-                "Не найдено",
-                JOptionPane.ERROR_MESSAGE);}
 
         this.fireTableDataChanged();
     }
-
 
 
     @Override
@@ -191,7 +208,7 @@ public class StuffTable extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 7;
+        return 6;
     }
 
     @Override
@@ -208,20 +225,13 @@ public class StuffTable extends AbstractTableModel {
 
             case 5:
                 return this.getProduct()[r].getWeight();
-            case 6:
-                Product s = this.getProduct()[r];
 
-                if (s instanceof Bakery)
-                    return ((Bakery) this.getProduct()[r]).expirationDate();
-                if (s instanceof Dairy)
-                    return ((Dairy) this.getProduct()[r]).issFilling();
-                break;
             case 0:
                 return this.getProduct()[r].getTypeOfProduct();
             default:
                 return "";
         }
-        return "";
+
     }
 
     @Override
@@ -234,33 +244,27 @@ public class StuffTable extends AbstractTableModel {
             case 2:
                 сolumn = "Название";
                 break;
-            case 3: сolumn = "Бренд";
+            case 3:
+                сolumn = "Бренд";
                 break;
-            case 4: сolumn = "Стоимость (рубли)";
+            case 4:
+                сolumn = "Стоимость (рубли)";
                 break;
-            case 5: сolumn = "Вес (грамм)";
+            case 5:
+                сolumn = "Вес(грам)";
+                break;
+            case 0:
+                сolumn = "Тип товара";
                 break;
 
-            case 6:
-                switch (TypeOfProduct) {
-                    case "Хлебо-булочные изделия":
-                        сolumn = "Срок годности в часах";
-                        break;
-                    case "Молочные продукты":
-                        сolumn = "Наполнитель";
-                        break;
-                    case "Бытовая химия":
-                        сolumn = "-";
-                        break;
-                    default:
-                        сolumn = "Наполнитель/срок годности";
-                        break;
-                }
-                break;
-            case 0: сolumn ="Тип товара";
-                break;
         }
         return сolumn;
     }
 
+    public int getID(int id) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getId() > id) id = products.get(i).getId();
+        }
+        return id + 1;
+    }
 }

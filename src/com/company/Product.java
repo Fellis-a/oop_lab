@@ -1,6 +1,8 @@
 package com.company;
 
 public abstract class Product {
+
+    private int id;
     private String typeOfProduct;
     private String Cost;
     private String Weight;
@@ -8,12 +10,11 @@ public abstract class Product {
     private String Name;
     private String Code;
 
-    protected int Number;
 
-    public Product(String code, String cost, String weight, String brand, String name ){
+    public Product(int id, String code, String name, String brand, String cost) {
+        this.id = id;
         this.Code = code;
         this.Cost = cost;
-        this.Weight = weight;
         this.Brand = brand;
         this.Name = name;
     }
@@ -38,7 +39,7 @@ public abstract class Product {
         Cost = cost;
     }
 
-    public String  getWeight() {
+    public String getWeight() {
         return Weight;
     }
 
@@ -51,12 +52,13 @@ public abstract class Product {
     }
 
     public void setCode(String code) {
-        Code = code;
+        this.Code = code;
     }
-    public String learnMore()
-    {
-        return "Продукт: " + getCode()+ "Вес: "+ getWeight()+"\n\t Стоимость: " + getCost();
+
+    public String learnMore() {
+        return "Продукт: " + getCode() + "Вес: " + getWeight() + "\n\t Стоимость: " + getCost();
     }
+
     abstract public void getInfo();//Получить информацию о товаре
 
     public String getBrand() {
@@ -73,6 +75,10 @@ public abstract class Product {
 
     public void setName(String name) {
         Name = name;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }
 

@@ -3,14 +3,12 @@ package com.company;
 import java.util.Date;
 
 public class Bakery extends Product {
-    private String Filling;
     private static int Quantity = 1;
 
-    public Bakery(String code, String cost, String weight, String name, String brand, String filling) {
-        super(code,cost,weight,brand, name);
-        this.Filling = filling;
+    public Bakery(int id, String code, String name, String brand, String cost, String weight) {
+        super(id,code,name,brand,cost);
         setTypeOfProduct("Выпечка");
-        this.Number = getQuantity();
+        this.setWeight(weight);
         setQuantity(getQuantity() + 1);
     }
 
@@ -30,13 +28,6 @@ public class Bakery extends Product {
     }
 
 
-    public String isFilling() {
-        return Filling;
-    }
-
-    public void setFilling(String  filling) {
-        Filling = filling;
-    }
 
     @Override
     public void getInfo()

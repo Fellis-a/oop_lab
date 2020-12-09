@@ -7,11 +7,11 @@ public class Household extends Product {
     private String Name;
     private static int Quantity = 1;
 
-    public Household(String code, String cost, String weight, String name, String brand) {
-        super(code,cost,weight, brand, name);
-        this.Name=name;
+    public Household(int id, String code, String name, String brand, String cost, String weight) {
+        super(id, code, name, brand, cost);
+        this.Name = name;
+        this.setWeight(weight);
         setTypeOfProduct("Бытовая химия");
-        this.Number = getQuantity();
         setQuantity(getQuantity() + 1);
     }
 
@@ -26,9 +26,8 @@ public class Household extends Product {
     @Override
     public String expirationDate() {
         Date date = new Date();
-        return date.toString()+1;
+        return date.toString() + 1;
     }
-
 
 
     public String getName() {
@@ -40,15 +39,14 @@ public class Household extends Product {
     }
 
     @Override
-    public void getInfo()
-    {
-        System.out.println( "Товар: " + getName()+ super.getBrand()+ "\n\t Стоимость: " + getCost() );
+    public void getInfo() {
+        System.out.println("Товар: " + getName() + super.getBrand() + "\n\t Стоимость: " + getCost());
     }
+
     @Override
-    public String learnMore()
-    {
-        return "Бытовая химия:"  + getName() + " "+getBrand()+
-                "\n\tСтоимость: " + getCost() + "\n\t Срок годности: " + getQuantity()+" \n\t Вес: " + super.getWeight();
+    public String learnMore() {
+        return "Бытовая химия:" + getName() + " " + getBrand() +
+                "\n\tСтоимость: " + getCost() + "\n\t Срок годности: " + getQuantity() + " \n\t Вес: " + super.getWeight();
 
     }
 

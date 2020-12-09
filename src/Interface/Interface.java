@@ -1,43 +1,30 @@
 package Interface;
 
-import com.company.Bakery;
-import com.company.Dairy;
-import com.company.Household;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class Interface extends JFrame {
-    public Interface() {super("SmallShop");}
+    public Interface() {
+        super("SmallShop");
+    }
 
     private static JTable tbl;
     private JScrollPane scroll;
-
-   // private JComboBox cmbProductsType;
-
-    private JButton add;
-    private JButton search;
-    private JButton delete;
-    private JButton menu;
 
 
     private static JPanel panel, panel1, panel2, header;
 
     private String[] chooseCmb = {
-                "Все",
-                "Бытовая химия",
-                "Молочные продукты",
-                "Выпечка"
+            "Все",
+            "Бытовая химия",
+            "Молочные продукты",
+            "Выпечка"
     };
     private JComboBox cmbProductsType = new JComboBox(chooseCmb);
-    private JRadioButton sortFirstType, sortSecondType, sortThirdType,sortForthType;
-
-
-
-
+    private JRadioButton sortFirstType, sortSecondType, sortThirdType, sortForthType;
     public StuffTable products = new StuffTable();
-    public StuffTable productsFound = new StuffTable();
+
 
     public static void mainInterface() {
 
@@ -52,8 +39,7 @@ public class Interface extends JFrame {
     }
 
 
-    private JMenuBar createSubmenus()
-    {
+    private JMenuBar createSubmenus() {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu menuItem1 = new JMenu("Товар");
@@ -70,11 +56,10 @@ public class Interface extends JFrame {
         JMenuItem findName = new JMenuItem("По названию");
 
         JMenu sort = new JMenu("Поиск по типу товара");
-        //JMenuItem sortFirstType = new JMenuItem("Сортировка по типу товара");
-         sortFirstType = new JRadioButton("Бытовая химия");
-         sortSecondType = new JRadioButton("Молочная продукция");
-         sortThirdType = new JRadioButton("Выпечка");
-         sortForthType = new JRadioButton("Все");
+        sortFirstType = new JRadioButton("Бытовая химия");
+        sortSecondType = new JRadioButton("Молочная продукция");
+        sortThirdType = new JRadioButton("Выпечка");
+        sortForthType = new JRadioButton("Все");
 
 
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -107,18 +92,17 @@ public class Interface extends JFrame {
         menuItem2.add(find);
         menuItem2.add(sort);
 
-        //findCode.addActionListener();
-        sort.addActionListener(this::sortProduct);
-        findCode.addActionListener(this::searchProduct);
+        findCode.setEnabled(false);
         findName.addActionListener(this::searchProductName);
+
         menuBar.add(menuItem1);
         menuBar.add(menuItem2);
         menuBar.add(menuHelp);
 
+
         aboutProgram.addActionListener(this::info);
 
         return menuBar;
-
 
     }
 
@@ -141,45 +125,31 @@ public class Interface extends JFrame {
 
         createSubmenus();
 
-
-        // JMenuBar использует блочное расположение (заполнитель вполне уместен)
         createSubmenus().add(Box.createHorizontalGlue());
 
-
-        // поместим меню в наше окно
         setJMenuBar(createSubmenus());
+
+
         //Панель с таблицей
         panel1 = new JPanel();
-        panel1.setSize(900,500);
+        panel1.setSize(900, 500);
         panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
 
         //таблица
-        products.Add(new Bakery("2215", "125", "115", "Булочка", "Каравай", "С наполнителем"));
-        products.Add(new Bakery("2216", "50", "100", "Улитка с маком", "Хлебзавод", "Без наполнителя"));
-
-        products.Add(new Dairy("2217", "69", "100", "Йогурт", "Активиа", "Без наполнителя"));
-        products.Add(new Dairy("2218", "50", "200", "Творог", "Простоквашино", "С наполнителем"));
-        products.Add(new Dairy("2219", "125", "115", "Йогурт с шоколадными шариками", "Данисимо", "С наполнителем"));
-
-        products.Add(new Household("2220", "130", "100", "Антисептик", "Фарм"));
-        products.Add(new Household("2221", "17", "50", "Влажные салфетки", "котте"));
-        products.Add(new Household("2222", "60", "80", "Мыло", "Дав"));
-
+        //products.Add(new Bakery(2,"2215", "Булочка", "Каравай", "125", "начинка"), "начинка");
+        //products.Add(new Bakery(5,"2216", "50", "100", "Улитка с маком", "Хлебзавод", "Без наполнителя"));
+        //products.Add(new Dairy(3,"2217", "Йогурт", "Активиа", "69", "100"));
+        //products.Add(new Dairy(4,"2218", "50", "200", "Творог", "Простоквашино", "С наполнителем"));
 
         tbl = new JTable();
         tbl.setPreferredScrollableViewportSize(new Dimension(950, 400));
         scroll = new JScrollPane(tbl);
         tbl.setModel(products);
         panel1.add(scroll);
-
-
         panel.add(panel1);
-
-
 
         getContentPane().add(panel);//сделали основную панель основной
 
-        //this.selectProduct(null);
     }
 
     private void AddStaff(ActionEvent actionEvent) {
@@ -187,81 +157,58 @@ public class Interface extends JFrame {
         AddForm a = new AddForm(products);
 
     }
-    private void FindProducts(ActionEvent actionEvent) {
-
-        ResultForm m = new ResultForm(products);
-
-    }
-
-    //метод, для показа таблицы в зависимости от того, что выбрали в комбобоксе
-    private void selectProductHousehold(ActionEvent e) {
 
 
-        // add.setEnabled(selectedValue.equals("Бытовая химия") || selectedValue.equals("Молочные продукты") || selectedValue.equals("Хлебо-булочные изделия"));
-    }
-
-    //метод для удаления животного в зависимости от того, что выбрали в комбобоксе
     private void deleteProduct(ActionEvent e) {
         Integer input = Integer.valueOf(JOptionPane.showInputDialog(null, "Для удаления товара необходимо ввести его код\nВведите код товара:",
-                "Удаление",JOptionPane.QUESTION_MESSAGE));
-        if (input.equals("")){
+                "Удаление", JOptionPane.QUESTION_MESSAGE));
+        if (input.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "Неверный ввод.Попробуйте еще раз",
                     "Ошибка",
                     JOptionPane.ERROR_MESSAGE);
-        }
-        else
-        {
-             products.delete(input.toString());
+        } else {
+            products.delete(input.toString());
         }
     }
 
-    private void searchProduct(ActionEvent e){
+    private void searchProduct(ActionEvent e) {
 
-        Integer input = Integer.valueOf(JOptionPane.showInputDialog(null, "Введите код продукта:",
-                "Поиск",JOptionPane.QUESTION_MESSAGE));
+        String input = JOptionPane.showInputDialog(null, "Введите код продукта:",
+                "Поиск", JOptionPane.QUESTION_MESSAGE);
 
 
-        if (input.equals("")){
+        if (input.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "Неверный ввод.Попробуйте еще раз!",
                     "Ошибка",
                     JOptionPane.ERROR_MESSAGE);
-        }
-        else
-        {
+        } else {
 
-            //products.search(input);
+            products.search(input);
             //productsFound.setValue(input);
-            ResultForm m = new ResultForm(productsFound);
+            //ResultForm m = new ResultForm(products.search(input));
 
         }
 
     }
-    private void searchProductName(ActionEvent e){
 
-        Integer input = Integer.valueOf(JOptionPane.showInputDialog(null, "Введите название продукта:",
-                "Поиск",JOptionPane.QUESTION_MESSAGE));
+    private void searchProductName(ActionEvent e) {
 
-        if (input.equals("")){
+        String input = JOptionPane.showInputDialog(null, "Введите название продукта:",
+                "Поиск", JOptionPane.QUESTION_MESSAGE);
+
+        if (input.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "Неверный ввод.Попробуйте еще раз!",
                     "Ошибка",
                     JOptionPane.ERROR_MESSAGE);
+        } else {
+
+            products.searchName(firstUpperCase(input));
+            ;
+
         }
-        else
-        {
-
-           // products.searchName(firstUpperCase(input));
-           // productsFound.setCode(input);
-        }
-
-    }
-    private void sortProduct(ActionEvent e){
-        String selectedValue = (String) this.cmbProductsType.getSelectedItem();
-        add.setEnabled(selectedValue.equals("Выпечка") || selectedValue.equals("Молочные продукты") || selectedValue.equals("Бытовая химия"));
-        products.setType(selectedValue);
-
 
     }
 
@@ -270,28 +217,31 @@ public class Interface extends JFrame {
 
         products.setType((String) this.cmbProductsType.getSelectedItem());
 
-        if (this.sortFirstType.isSelected()){
-            products.setType( "Бытовая химия");
-        } else if (this.sortSecondType.isSelected()){
-            products.setType( "Молочные продукты");
-        } else if(this.sortThirdType.isSelected()){
-            products.setType( "Выпечка");
-        } else {products.setType( "Все");}
+        if (this.sortFirstType.isSelected()) {
+            products.setType("Бытовая химия");
+        } else if (this.sortSecondType.isSelected()) {
+            products.setType("Молочные продукты");
+        } else if (this.sortThirdType.isSelected()) {
+            products.setType("Выпечка");
+        } else {
+            products.setType("Все");
+        }
 
     }
 
     private void info(ActionEvent actionEvent) {
 
-        String message = "<html>Программа предназначена для работы со складом магазина.<br/>Интерфейс позволяет просматривать товары.<br/>"+
-                "Также присутсвует возможность поиска товаров по названию, штрих-коду и по типу товаров.<br/>При возникновений ошибок в поиске"+
-                " появляются соответсвующие подсказки.<br/>Имеется возможность добавления и удаления товаров.<br/>Добавление товара осуществляется при помощи отдельной формы.<br/>"+
+        String message = "<html>Программа предназначена для работы со складом магазина.<br/>Интерфейс позволяет просматривать товары.<br/>" +
+                "Также присутсвует возможность поиска товаров по названию, штрих-коду и по типу товаров.<br/>При возникновений ошибок в поиске" +
+                " появляются соответсвующие подсказки.<br/>Имеется возможность добавления и удаления товаров.<br/>Добавление товара осуществляется при помощи отдельной формы.<br/>" +
                 "После добавления и удаления таблица обновляется.</html>";
-        JOptionPane.showMessageDialog(null , message, "Справка", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "Справка", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static String firstUpperCase(String word){
+    public static String firstUpperCase(String word) {
         return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
+
     private void exitAction(ActionEvent e) {
         System.exit(0);
     }
